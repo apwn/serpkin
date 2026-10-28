@@ -3,10 +3,10 @@
 The SEO teammate for your coding agent. This repository is a Claude Code plugin marketplace with one plugin, `serpkin`.
 
 ```sh
-claude plugin marketplace add apwn/serpkin-plugin && claude plugin install serpkin@serpkin
+claude plugin marketplace add apwn/serpkin && claude plugin install serpkin@serpkin
 ```
 
-Inside a session: `/plugin marketplace add apwn/serpkin-plugin`, then `/plugin install serpkin@serpkin`.
+Inside a session: `/plugin marketplace add apwn/serpkin`, then `/plugin install serpkin@serpkin`.
 
 The fastest setup is `npx serpkin` in your project. It signs you in, registers the site, uploads the route map and offers to install this plugin for you.
 

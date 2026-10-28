@@ -8,7 +8,7 @@
     "url": "https://serpkin.com"
   },
   "homepage": "https://serpkin.com",
-  "repository": "https://github.com/apwn/serpkin-plugin",
+  "repository": "https://github.com/apwn/serpkin",
   "license": "MIT",
   "keywords": ["seo", "nextjs", "mcp", "search-console"]
 }
