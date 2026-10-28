@@ -1,0 +1,14 @@
+{
+  "name": "serpkin",
+  "displayName": "Serpkin",
+  "version": "0.2.1",
+  "description": "The SEO brain for your coding agent: ranked SEO missions with patch-ready plans, preview checks and verification.",
+  "author": {
+    "name": "Serpkin",
+    "url": "https://serpkin.com"
+  },
+  "homepage": "https://serpkin.com",
+  "repository": "https://github.com/apwn/serpkin-plugin",
+  "license": "MIT",
+  "keywords": ["seo", "nextjs", "mcp", "search-console"]
+}

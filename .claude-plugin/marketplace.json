@@ -1,0 +1,24 @@
+{
+  "name": "serpkin",
+  "description": "Serpkin plugins for coding agents.",
+  "owner": {
+    "name": "Serpkin",
+    "url": "https://serpkin.com"
+  },
+  "plugins": [
+    {
+      "name": "serpkin",
+      "source": "./plugins/serpkin",
+      "description": "The SEO brain for your coding agent: ranked SEO missions with patch-ready plans, preview checks and verification.",
+      "version": "0.2.1",
+      "category": "development",
+      "tags": [
+        "seo",
+        "nextjs",
+        "mcp",
+        "search-console"
+      ],
+      "homepage": "https://serpkin.com/integrations/claude-code"
+    }
+  ]
+}

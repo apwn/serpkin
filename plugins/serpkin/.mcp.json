@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "serpkin": {
+      "type": "http",
+      "url": "${SERPKIN_SERVER:-https://serpkin.com}/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SERPKIN_API_KEY}"
+      }
+    }
+  }
+}

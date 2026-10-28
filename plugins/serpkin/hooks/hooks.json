@@ -1,0 +1,138 @@
+{
+  "description": "Serpkin: one line with the next SEO mission at session start (linked projects only), and one /serpkin:check reminder after a push or deploy. Opt out with SERPKIN_HOOKS=off.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-start.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git push*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(git -C * push*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(vercel*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(npx vercel*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(netlify deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(npx netlify deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(wrangler*deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(npx wrangler*deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(fly deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(flyctl deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(firebase deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(npx firebase deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(railway up*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(npm run deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(pnpm deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(pnpm run deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(yarn deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(yarn run deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "if": "Bash(bun run deploy*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/after-deploy.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
