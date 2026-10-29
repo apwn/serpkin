@@ -10,7 +10,7 @@
       "name": "serpkin",
       "source": "./plugins/serpkin",
       "description": "The SEO brain for your coding agent: ranked SEO missions with patch-ready plans, preview checks and verification.",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "category": "development",
       "tags": [
         "seo",
