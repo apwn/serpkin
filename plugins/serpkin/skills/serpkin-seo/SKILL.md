@@ -32,6 +32,20 @@ Every mutating call needs `project_id` and a new `idempotency_key`.
 - **After a push or deploy.** Once per session, the plugin suggests `/serpkin:check <preview-url>`. Suggest it to the user when the preview URL is known; don't run it unasked.
 - Both are silent outside linked projects, when offline or signed out. The user can turn them off with `SERPKIN_HOOKS=off` (or keep one: `SERPKIN_HOOKS=session` / `SERPKIN_HOOKS=deploy`).
 
+## Questions, not missions
+
+For questions about the site ("how's my traffic?", "who links to me?", "am I in Google's AI answers?", "what changed this week?"), answer from the free read tools first: `serpkin_weekly_summary`, `serpkin_get_performance`, `serpkin_get_rankings`, `serpkin_get_backlinks`, `serpkin_get_ai_visibility`, `serpkin_site_watch`, `serpkin_get_site_context`. Research tools (keywords, SERP, competitors, gaps, briefs) cost credits: say the cost and ask first.
+
+## Skipping a mission
+
+If the user says a mission isn't relevant, is already done or isn't worth it now, call `serpkin_update_mission` with `action: "dismiss"` and the matching `reason` (`not_relevant`, `already_done`, `too_much_work`, `disagree`, `other`), plus their words as `note`. Two "not relevant" dismissals of one kind make Serpkin rank that kind lower for the site. `action: "restore"` brings a mission back.
+
+## Free tools, comparison pages and directories
+
+- **`new_tool`** (a calculator, generator, checker, converter, template or quiz): put the logic in a pure function with unit tests, render labelled inputs in the server HTML with a sensible default result, then write the explanation (how it works, a worked example, limits; at least 300 words). Offer an embed with a credit link: free tools earn links.
+- **`new_comparison`** ("x vs y", "x alternatives", "best x"): a sourced comparison table, the date the facts were checked, a plain statement that you make one of the products, and who each option fits. No invented ratings or reviews, no borrowed logos, no Review markup about other products.
+- **`directory_listing`**: draft one listing kit in the repository (`marketing/listing-kit.md`) from the site's real copy and hand `growth.directories` to the user. Never submit listings or create accounts yourself.
+
 ## Content decay missions
 
 A `content_decay` mission is a page whose clicks have slid for months while the rest of the site held. Refresh, don't rewrite: update aged facts, dates and examples, answer the queries that lost clicks (listed first), cover the sections in the attached brief, and link to the page from newer pages. Change `dateModified` in Article JSON-LD (and a year in the title) only when the content truly changed.
