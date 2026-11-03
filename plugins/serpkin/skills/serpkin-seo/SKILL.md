@@ -16,7 +16,7 @@ Serpkin ranks this site's SEO work into missions and verifies the result. Use it
 ## The loop
 
 1. **Next mission.** Call `serpkin_next_mission`. If it returns `suggested_action` instead of a mission, do that (usually `serpkin_scan_site`) and stop.
-2. **Implement.** Follow `mission.implementation.steps` in order. Each step names a `file` (from the route map), an `action` (edit, create or run) and an `intent`. Adapt each `snippet` to the existing code; don't paste blindly. Use `recipe` and `acceptance_criteria` for anything the steps don't cover. Keep the change focused on this one mission.
+2. **Implement.** First call `serpkin_update_mission` with `action: "start"` so the user and other agents see it is in progress. Research missions are a tool call (`serpkin_research_keywords`), not a code change. Then follow `mission.implementation.steps` in order. Each step names a `file` (from the route map), an `action` (edit, create or run) and an `intent`. Adapt each `snippet` to the existing code; don't paste blindly. Use `recipe` and `acceptance_criteria` for anything the steps don't cover. Keep the change focused on this one mission.
 3. **Run checks.** Run the project's tests, type check and build.
 4. **Check the preview.** Once the branch has a preview deployment, run `npx serpkin check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
 5. **Submit.** Call `serpkin_submit_result` with the PR URL, preview URL and a short test summary.
