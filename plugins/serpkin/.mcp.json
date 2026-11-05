@@ -1,11 +1,9 @@
 {
   "mcpServers": {
     "serpkin": {
-      "type": "http",
-      "url": "${SERPKIN_SERVER:-https://serpkin.com}/api/mcp",
-      "headers": {
-        "Authorization": "Bearer ${SERPKIN_API_KEY}"
-      }
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "--registry=https://registry.npmjs.org", "serpkin@0.2.7", "mcp"]
     }
   }
 }
