@@ -9,8 +9,8 @@ Serpkin ranks this site's SEO work into missions and verifies the result. Use it
 
 ## Ids
 
-- `project_id`: read the `serpkin://projects` resource.
-- `site_id`: `site_id` in `.serpkin.json` at the repository root, or the `serpkin://sites` resource.
+- The MCP connection already knows the workspace: no `project_id` needed.
+- `site_id`: `site_id` in `.serpkin.json` at the repository root, or `serpkin_get_workspace`.
 - No `.serpkin.json` and no site: ask the user to run `npx serpkin` first.
 
 ## The loop
@@ -21,10 +21,10 @@ Serpkin ranks this site's SEO work into missions and verifies the result. Use it
 4. **Check the preview.** Once the branch has a preview deployment, run `npx serpkin check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
 5. **Submit.** Call `serpkin_submit_result` with the PR URL, preview URL and a short test summary.
 6. **Verify the preview.** Technical missions: `serpkin_verify_mission` with `environment: "preview"` and `preview_url`. Content and research missions: `environment: "evidence"`.
-7. **Verify production.** Only after the human has merged and deployed, call `serpkin_verify_mission` with `environment: "production"`.
+7. **Verify production.** Only after the human has merged and deployed, call `serpkin_verify_mission` with `environment: "production"`. If deploy checks are on (Settings → Site), Serpkin does this by itself after the deploy.
 8. Call `serpkin_next_mission` again.
 
-Every mutating call needs `project_id` and a new `idempotency_key`.
+`idempotency_key` is optional: Serpkin derives one, so a retried call doesn't run twice.
 
 ## Hooks (Claude Code plugin)
 

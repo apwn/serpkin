@@ -8,6 +8,6 @@ Use the serpkin-seo skill to ship the mission you just implemented (mission id f
 1. Run `npx serpkin check <preview-url>`. If it exits 1, fix the regressions, push and run it again.
 2. Call `serpkin_submit_result` with the PR URL, the preview URL and a short summary of the tests you ran.
 3. Call `serpkin_verify_mission`: `environment: "preview"` with the preview_url for technical missions, `environment: "evidence"` for content and research missions.
-4. Report the verification status and tier. Remind me to call production verification after I deploy. Don't merge or deploy.
+4. Report the verification status and tier. After I deploy, verify with `environment: "production"` (Serpkin does this by itself if deploy checks are on in Settings → Site). Don't merge or deploy.
 
 If no preview URL was given, ask for it.
