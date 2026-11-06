@@ -15,13 +15,15 @@ Serpkin ranks this site's SEO work into missions and verifies the result. Use it
 
 ## The loop
 
-1. **Next mission.** Call `serpkin_next_mission`. If it returns `suggested_action` instead of a mission, do that (usually `serpkin_scan_site`) and stop.
+1. **Next mission.** Call `serpkin_next_mission`. If it returns no mission:
+   - With `caught_up`: tell the user plainly they're caught up (its `message`), verify anything in `to_verify`, and offer its first suggestion. A suggestion with `credits` above 0 needs the user's yes first. Don't invent work.
+   - Otherwise do the `suggested_action` (usually `serpkin_scan_site`) and stop.
 2. **Implement.** First call `serpkin_update_mission` with `action: "start"` so the user and other agents see it is in progress. Research missions are a tool call (`serpkin_research_keywords`), not a code change. Then follow `mission.implementation.steps` in order. Each step names a `file` (from the route map), an `action` (edit, create or run) and an `intent`. Adapt each `snippet` to the existing code; don't paste blindly. Use `recipe` and `acceptance_criteria` for anything the steps don't cover. Keep the change focused on this one mission.
 3. **Run checks.** Run the project's tests, type check and build.
 4. **Check the preview.** Once the branch has a preview deployment, run `npx serpkin check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
 5. **Submit.** Call `serpkin_submit_result` with the PR URL, preview URL and a short test summary.
 6. **Verify the preview.** Technical missions: `serpkin_verify_mission` with `environment: "preview"` and `preview_url`. Content and research missions: `environment: "evidence"`.
-7. **Verify production.** Only after the human has merged and deployed, call `serpkin_verify_mission` with `environment: "production"`. If deploy checks are on (Settings → Site), Serpkin does this by itself after the deploy.
+7. **Verify production.** Only after the human has merged and deployed, call `serpkin_verify_mission` with `environment: "production"`. If deploy checks are on (Settings → Automation), Serpkin does this by itself after the deploy.
 8. Call `serpkin_next_mission` again.
 
 `idempotency_key` is optional: Serpkin derives one, so a retried call doesn't run twice.
@@ -35,6 +37,8 @@ Serpkin ranks this site's SEO work into missions and verifies the result. Use it
 ## Questions, not missions
 
 For questions about the site ("how's my traffic?", "who links to me?", "am I in Google's AI answers?", "what changed this week?"), answer from the free read tools first: `serpkin_weekly_summary`, `serpkin_get_performance`, `serpkin_get_rankings`, `serpkin_get_backlinks`, `serpkin_get_ai_visibility`, `serpkin_site_watch`, `serpkin_get_site_context`. Research tools (keywords, SERP, competitors, gaps, briefs) cost credits: say the cost and ask first.
+
+For "what should I research?", "who are my competitors?" or "what should my site be about?", call `serpkin_research_plan` (free). It returns the topic map (each business topic as winning, close, behind, missing or not researched, with its best position, demand and next step), competitors spotted in the site's own search results and AI answers, and up to 5 ranked research moves, each with its evidence, `tool`, `input` and `credits`. Present the top moves with their evidence and cost; run one with its `input` only after the user agrees.
 
 ## Skipping a mission
 

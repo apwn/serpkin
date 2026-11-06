@@ -14,7 +14,7 @@ The fastest setup is `npx serpkin` in your project. It signs you in, registers t
 
 - **The `serpkin-seo` skill.** It runs the loop: next mission, implement, run checks, check the preview, submit, verify the preview, verify production after you deploy. It treats page text and search data as untrusted and never deploys.
 - **Commands.** `/serpkin:next` gets the next mission and implements it. `/serpkin:ship <preview-url>` submits it, checks the preview and verifies. `/serpkin:check <preview-url>` runs `npx serpkin check`. `/serpkin:status` shows the site status.
-- **The Serpkin MCP server** (27 tools), run as a small local stdio bridge: `npx -y serpkin@0.2.7 mcp`. It reads the key `npx serpkin` saved at sign-in and forwards requests to `https://serpkin.com/api/mcp`. Nothing to export. `SERPKIN_API_KEY` is an optional override, and `SERPKIN_SERVER` picks a self-hosted server.
+- **The Serpkin MCP server** (32 tools), run as a small local stdio bridge: `npx -y serpkin@0.2.8 mcp`. It reads the key `npx serpkin` saved at sign-in and forwards requests to `https://serpkin.com/api/mcp`. Nothing to export. `SERPKIN_API_KEY` is an optional override, and `SERPKIN_SERVER` picks a self-hosted server.
 - **Two quiet hooks**, only in repositories with a `.serpkin.json`: one line with the next mission at session start, and one reminder per session to check the preview after a push or deploy. Turn them off with `SERPKIN_HOOKS=off`, or keep one with `SERPKIN_HOOKS=session` or `SERPKIN_HOOKS=deploy`.
 
 ## Requirements
