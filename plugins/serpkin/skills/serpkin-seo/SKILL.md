@@ -26,10 +26,11 @@ An unverified site gets a 6-page preview. To verify it:
 
 1. **Next mission.** Call `serpkin_next_mission`. If it returns no mission:
    - With `caught_up`: tell the user plainly they're caught up (its `message`), verify anything in `to_verify`, and offer its first suggestion. A suggestion with `credits` above 0 needs the user's yes first. Don't invent work.
+   - With `caught_up.saved_idea`: the user saved that search for later. Say what it would do (its `plan` and `why`) and, with their yes, call `serpkin_explore` with its `input` (action `adopt`, no credits). It extends the open mission on that page or creates one; then continue from step 2 with that mission.
    - Otherwise do the `suggested_action` (usually `serpkin_scan_site`) and stop.
 2. **Implement.** First call `serpkin_update_mission` with `action: "start"` so the user and other agents see it is in progress. Research missions are a tool call (`serpkin_research_keywords`), not a code change. Then follow `mission.implementation.steps` in order. Each step names a `file` (from the route map), an `action` (edit, create or run) and an `intent`. Adapt each `snippet` to the existing code; don't paste blindly. Use `recipe` and `acceptance_criteria` for anything the steps don't cover. Keep the change focused on this one mission.
 3. **Run checks.** Run the project's tests, type check and build.
-4. **Check the preview.** Once the branch has a preview deployment, run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.16 check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
+4. **Check the preview.** Once the branch has a preview deployment, run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.19 check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
 5. **Submit.** Call `serpkin_submit_result` with the PR URL, preview URL and a short test summary.
 6. **Verify the preview.** Technical missions: `serpkin_verify_mission` with `environment: "preview"` and `preview_url`. Content and research missions: `environment: "evidence"`.
 7. **Verify production.** Only after the human has merged and deployed, call `serpkin_verify_mission` with `environment: "production"`. If deploy checks are on (Settings → Automation), Serpkin does this by itself after the deploy.
@@ -51,13 +52,24 @@ For "what should I research?", "who are my competitors?" or "what should my site
 
 ## Skipping a mission
 
-If the user says a mission isn't relevant, is already done or isn't worth it now, call `serpkin_update_mission` with `action: "dismiss"` and the matching `reason` (`not_relevant`, `already_done`, `too_much_work`, `disagree`, `other`), plus their words as `note`. Two "not relevant" dismissals of one kind make Serpkin rank that kind lower for the site. `action: "restore"` brings a mission back.
+If the user says a mission isn't relevant, is already done or isn't worth it now, call `serpkin_update_mission` with `action: "dismiss"` and the matching `reason` (`not_relevant`, `already_done`, `too_much_work`, `disagree`, `other`), plus their words as `note`. Two "not relevant" dismissals of one kind make Serpkin rank that kind lower for the site. `action: "restore"` brings a mission back. Mission ids from lists (8 characters) work in every tool.
+
+## Outreach and waiting on others
+
+For missions that end with someone else deciding (`brand_mentions`, `directory_listing`, `link_outreach`, `tool_links`): draft the pitches or the listing kit; the user sends or submits them. Log each contact with `serpkin_update_mission` `action: "log_outreach"` and `outreach: [{target, contact, channel, sent_at?, kind: "first"|"follow_up"}]`, then `action: "wait"` (optional `follow_up_days`, 7–30, default 10). The mission leaves the queue and comes back with `follow_up_due: true` and a follow-up step: draft one short, polite follow-up per contact without a reply, nothing more. `outreach_status` lists targets still not contacted. When a mention goes live, record its URL with `serpkin_submit_result` (works from waiting).
 
 ## Free tools, comparison pages and directories
 
 - **`new_tool`** (a calculator, generator, checker, converter, template or quiz): put the logic in a pure function with unit tests, render labelled inputs in the server HTML with a sensible default result, then write the explanation (how it works, a worked example, limits; at least 300 words). Offer an embed with a credit link: free tools earn links.
 - **`new_comparison`** ("x vs y", "x alternatives", "best x"): a sourced comparison table, the date the facts were checked, a plain statement that you make one of the products, and who each option fits. No invented ratings or reviews, no borrowed logos, no Review markup about other products.
 - **`directory_listing`**: draft one listing kit in the repository (`marketing/listing-kit.md`) from the site's real copy and hand `growth.directories` to the user. Never submit listings or create accounts yourself.
+- **`landing_page`** (a search naming a product or use case, "invoicing software for freelancers"): first confirm the product really serves it, otherwise dismiss as not relevant. Build it in the marketing section with the site's own components: the use case in the searcher's words, the problem, the features that solve it, proof you can source, pricing, a call to action and an FAQ. No invented customers, quotes or numbers.
+- **`brand_search`**: lead the homepage title with the product name, add Organization JSON-LD (name, url, logo, sameAs with the official profiles) and WebSite JSON-LD with the same name.
+- **`topic_hub`**, **`prune_content`**, **`rss_feed`** (blogs): a hub page that adds an overview and a reading order, not just links; each old post is refreshed, merged with a 301 or retired (410 or noindex), with keepers listed in `artifacts.excluded_pages`; a feed at a stable address announced with `<link rel="alternate" type="application/rss+xml">`.
+
+## Sites built in a hosted CMS
+
+When a mission has `cms` (WordPress, Ghost, Webflow, Wix, Squarespace, Framer, Shopify, HubSpot), there is usually no repository to change: its first step says where the setting lives in that dashboard. Prepare the exact change (copy, settings, any snippet) for the user to apply, unless you have access to the CMS's admin or API. If a repository does render the site (a headless front end), work there.
 
 ## Content decay missions
 

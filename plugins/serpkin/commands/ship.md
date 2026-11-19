@@ -5,7 +5,7 @@ argument-hint: "<preview-url> [mission-id]"
 
 Use the serpkin-seo skill to ship the mission you just implemented (mission id from the arguments, otherwise the one in progress from `serpkin_next_mission`). Arguments: $ARGUMENTS
 
-1. Run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.16 check <preview-url>`. If it exits 1, fix the regressions, push and run it again.
+1. Run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.19 check <preview-url>`. If it exits 1, fix the regressions, push and run it again.
 2. Call `serpkin_submit_result` with the PR URL, the preview URL and a short summary of the tests you ran.
 3. Call `serpkin_verify_mission`: `environment: "preview"` with the preview_url for technical missions, `environment: "evidence"` for content and research missions.
 4. Report the verification status and tier. After I deploy, verify with `environment: "production"` (Serpkin does this by itself if deploy checks are on in Settings → Automation). Don't merge or deploy.

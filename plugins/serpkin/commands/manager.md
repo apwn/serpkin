@@ -33,7 +33,8 @@ Each run:
    - Not connected: anything the summary says is missing (Search Console, ownership, scans).
    - If launch_plan is set (a site new to search): the day of its first 90 days, milestones reached this week and launch_plan.next_step.
 3. If you can work in this site's repository: call serpkin_next_mission, then serpkin_update_mission with action "start", implement its steps, run the tests, open ONE pull request, and call serpkin_submit_result with the pull request URL.
-   If you can't: end the check-in with the next mission's prompt from the summary, so I can paste it into my coding agent.
+   If there is no mission but saved_idea is set (my saved keyword ideas): call serpkin_explore with its input (action "adopt", no credits; it adds the search to an open mission on that page or makes one mission), then work that mission the same way. At most one saved idea per run.
+   If you can't: end the check-in with the next mission's prompt from the summary, or name the saved idea and its plan and ask me whether to make it a mission.
 
 Rules:
 - Never merge, deploy or publish. I review and ship.
@@ -58,6 +59,7 @@ Each run:
    - Do this week: 1 to 3 items across all sites from the overview's needs list, most urgent first, each naming its site.
    - Not connected: anything the summary says is missing, with the site it's for.
 3. If you are working in a site's repository: read site_id from its .serpkin.json, call serpkin_next_mission with that site_id, then serpkin_update_mission with action "start", implement its steps, run the tests, open ONE pull request, and call serpkin_submit_result with the pull request URL. One pull request per repository, at most 3 per run.
+   If that site has no mission but caught_up.saved_idea is set (my saved keyword ideas): call serpkin_explore with its input (action "adopt", no credits), then work the mission it returns the same way.
    For every other site: end the check-in with its next mission's prompt from the summary, so I can paste it into my coding agent.
 
 Rules:
