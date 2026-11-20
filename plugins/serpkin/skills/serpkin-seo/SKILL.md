@@ -30,11 +30,15 @@ An unverified site gets a 6-page preview. To verify it:
    - Otherwise do the `suggested_action` (usually `serpkin_scan_site`) and stop.
 2. **Implement.** First call `serpkin_update_mission` with `action: "start"` so the user and other agents see it is in progress. Research missions are a tool call (`serpkin_research_keywords`), not a code change. Then follow `mission.implementation.steps` in order. Each step names a `file` (from the route map), an `action` (edit, create or run) and an `intent`. Adapt each `snippet` to the existing code; don't paste blindly. Use `recipe` and `acceptance_criteria` for anything the steps don't cover. Keep the change focused on this one mission.
 3. **Run checks.** Run the project's tests, type check and build.
-4. **Check the preview.** Once the branch has a preview deployment, run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.19 check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
+4. **Check the preview.** Once the branch has a preview deployment, run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.20 check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
 5. **Submit.** Call `serpkin_submit_result` with the PR URL, preview URL and a short test summary.
 6. **Verify the preview.** Technical missions: `serpkin_verify_mission` with `environment: "preview"` and `preview_url`. Content and research missions: `environment: "evidence"`.
 7. **Verify production.** Only after the human has merged and deployed, call `serpkin_verify_mission` with `environment: "production"`. If deploy checks are on (Settings → Automation), Serpkin does this by itself after the deploy.
+   A production check that fails within minutes of the submission is usually a deploy still in flight: when the first warning says Serpkin checks again by itself (`recheck_at` on the mission), don't re-run it or investigate; tell the user it rechecks at that time.
+   A verification with outcome `incomplete` means nothing failed but some checks can't be confirmed automatically (index status, a full crawl, Core Web Vitals). The mission stays `implemented`. Tell the user which checks those were; once they agree the work shipped, close it with `serpkin_update_mission` `action: "done"`.
 8. Call `serpkin_next_mission` again.
+
+If `serpkin_get_workspace` returns `serpkin.update_available: true`, tell the user once: run `serpkin.update.claude_code_plugin` (Claude Code plugin) or `serpkin.update.command`, then restart the agent session. The running session keeps the old version until it restarts. A mission whose `doer` is `you` because Serpkin's review doubts it (`needs_look`) waits for the user: show the reason and let them start or dismiss it.
 
 `idempotency_key` is optional: Serpkin derives one, so a retried call doesn't run twice.
 
