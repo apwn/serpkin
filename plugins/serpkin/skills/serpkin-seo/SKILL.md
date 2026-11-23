@@ -24,13 +24,13 @@ An unverified site gets a 6-page preview. To verify it:
 
 ## The loop
 
-1. **Next mission.** Call `serpkin_next_mission`. If it returns no mission:
+1. **Next mission.** Call `serpkin_next_mission`. Until a site has its first verified mission, it offers a small technical fix that can be verified on a preview the same day (`rank_reason` says so): ship it end to end, so the user sees a verified result early. If it returns no mission:
    - With `caught_up`: tell the user plainly they're caught up (its `message`), verify anything in `to_verify`, and offer its first suggestion. A suggestion with `credits` above 0 needs the user's yes first. Don't invent work.
    - With `caught_up.saved_idea`: the user saved that search for later. Say what it would do (its `plan` and `why`) and, with their yes, call `serpkin_explore` with its `input` (action `adopt`, no credits). It extends the open mission on that page or creates one; then continue from step 2 with that mission.
    - Otherwise do the `suggested_action` (usually `serpkin_scan_site`) and stop.
 2. **Implement.** First call `serpkin_update_mission` with `action: "start"` so the user and other agents see it is in progress. Research missions are a tool call (`serpkin_research_keywords`), not a code change. Then follow `mission.implementation.steps` in order. Each step names a `file` (from the route map), an `action` (edit, create or run) and an `intent`. Adapt each `snippet` to the existing code; don't paste blindly. Use `recipe` and `acceptance_criteria` for anything the steps don't cover. Keep the change focused on this one mission.
 3. **Run checks.** Run the project's tests, type check and build.
-4. **Check the preview.** Once the branch has a preview deployment, run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.20 check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
+4. **Check the preview.** Once the branch has a preview deployment, run `npx -y --registry=https://registry.npmjs.org serpkin@0.2.21 check <preview-url>`. Exit code 1 means regressions; fix them and re-run.
 5. **Submit.** Call `serpkin_submit_result` with the PR URL, preview URL and a short test summary.
 6. **Verify the preview.** Technical missions: `serpkin_verify_mission` with `environment: "preview"` and `preview_url`. Content and research missions: `environment: "evidence"`.
 7. **Verify production.** Only after the human has merged and deployed, call `serpkin_verify_mission` with `environment: "production"`. If deploy checks are on (Settings → Automation), Serpkin does this by itself after the deploy.
@@ -56,11 +56,18 @@ For "what should I research?", "who are my competitors?" or "what should my site
 
 ## Skipping a mission
 
-If the user says a mission isn't relevant, is already done or isn't worth it now, call `serpkin_update_mission` with `action: "dismiss"` and the matching `reason` (`not_relevant`, `already_done`, `too_much_work`, `disagree`, `other`), plus their words as `note`. Two "not relevant" dismissals of one kind make Serpkin rank that kind lower for the site. `action: "restore"` brings a mission back. Mission ids from lists (8 characters) work in every tool.
+If the user says a mission shouldn't be done, call `serpkin_update_mission` with `action: "dismiss"`, the matching `reason` and their words as `note`:
+- `wrong`: the finding is false (the page already has it, the check misread the page). It feeds Serpkin's accuracy tracking, and the finding stays off those pages until they change. Use it only for false findings.
+- `not_relevant`: true, but it doesn't fit the business. It also stops near-duplicate topics coming back.
+- `already_done`: the work exists; the finding stays off those pages until they change.
+- `not_now`: snoozed; it comes back in 30 days.
+- `too_much_work`, `disagree`, `other` still work.
+
+Two `not_relevant` or `wrong` dismissals of one kind make Serpkin rank that kind lower for the site. Only when the user says to stop suggesting a kind altogether, add `mute_kind: true` to the dismissal: open missions of that kind close and none are created. Fixes that keep the site from being crawled or indexed can't be muted. `serpkin_get_site_context` lists `muted_kinds`; `action: "restore"` with `mute_kind: false` turns a kind back on, and `restore` alone brings back any dismissed mission. Serpkin skips reworded duplicates itself. Mission ids from lists (8 characters) work in every tool.
 
 ## Outreach and waiting on others
 
-For missions that end with someone else deciding (`brand_mentions`, `directory_listing`, `link_outreach`, `tool_links`): draft the pitches or the listing kit; the user sends or submits them. Log each contact with `serpkin_update_mission` `action: "log_outreach"` and `outreach: [{target, contact, channel, sent_at?, kind: "first"|"follow_up"}]`, then `action: "wait"` (optional `follow_up_days`, 7–30, default 10). The mission leaves the queue and comes back with `follow_up_due: true` and a follow-up step: draft one short, polite follow-up per contact without a reply, nothing more. `outreach_status` lists targets still not contacted. When a mention goes live, record its URL with `serpkin_submit_result` (works from waiting).
+For missions that end with someone else deciding (`brand_mentions`, `directory_listing`, `link_outreach`, `tool_links`): draft the pitches or the listing kit; the user sends or submits them. Log each contact with `serpkin_update_mission` `action: "log_outreach"` and `outreach: [{target, contact, channel, sent_at?, kind: "first"|"follow_up"}]`, then `action: "wait"` (optional `follow_up_days`, 7–30, default 10). The mission leaves the queue and comes back with `follow_up_due: true` and a follow-up step: draft one short, polite follow-up per contact without a reply, nothing more. `outreach_status` lists targets still not contacted. When a listing, roundup or mention goes live, record its page address in `serpkin_submit_result` `artifacts.listing_urls` (works from waiting), then verify with `environment: "evidence"`. Serpkin opens each page and checks it links to the site, and whether the link is dofollow. A live link verifies the mission; if none is found yet, the mission waits and Serpkin rechecks at 3, 10 and 30 days, then hands back a follow-up draft. Never send or post anything for the user. A mission that passed without a live check shows as "reported by you", not verified: say so plainly.
 
 ## Free tools, comparison pages and directories
 

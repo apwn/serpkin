@@ -3,7 +3,7 @@
     "serpkin": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "--registry=https://registry.npmjs.org", "serpkin@0.2.20", "mcp"]
+      "args": ["-y", "--registry=https://registry.npmjs.org", "serpkin@0.2.21", "mcp"]
     }
   }
 }
